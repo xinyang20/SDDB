@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}更新任务状态{% endblock %}
+
+{% block body %}
+<h1>更新任务状态</h1>
+
+<!-- 显示任务详情 -->
+<div class="task-details">
+    <h2>任务详情</h2>
+    <table>
+        <tr>
+            <th>任务 ID</th>
+            <td>{{ task.task_id }}</td>
+        </tr>
+        <tr>
+            <th>处方 ID</th>
+            <td>{{ task.prescription_id }}</td>
+        </tr>
+        <tr>
+            <th>当前状态</th>
+            <td>{{ task.status }}</td>
+        </tr>
+        <tr>
+            <th>收方时间</th>
+            <td>{{ task.receive_time if task.receive_time else '未完成' }}</td>
+        </tr>
+        <tr>
+            <th>配方时间</th>
+            <td>{{ task.form_time if task.form_time else '未完成' }}</td>
+        </tr>
+        <tr>
+            <th>煎药开始时间</th>
+            <td>{{ task.decoction_start_time if task.decoction_start_time else '未开始' }}</td>
+        </tr>
+        <tr>
+            <th>煎药结束时间</th>
+            <td>{{ task.decoction_end_time if task.decoction_end_time else '未完成' }}</td>
+        </tr>
+    </table>
+</div>
+
+<!-- 任务操作 -->
+<div class="task-actions">
+    <form method="POST">
+        {% if task.receive_worker_id == session['role_id'] and not task.receive_time %}
+        <button type="submit" name="action" value="receive">完成收方</button>
+        {% elif task.form_worker_id == session['role_id'] and not task.form_time %}
+        <button type="submit" name="action" value="formulate">完成配方</button>
+        {% elif task.decoction_worker_id == session['role_id'] and not task.decoction_start_time %}
+        <button type="submit" name="action" value="decoction_start">开始煎药</button>
+        {% elif task.decoction_worker_id == session['role_id'] and not task.decoction_end_time %}
+        <button type="submit" name="action" value="decoction_end">完成煎药</button>
+        {% else %}
+        <p>当前任务无可操作步骤或已完成。</p>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}

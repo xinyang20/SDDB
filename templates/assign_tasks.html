@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}任务分配{% endblock %}
+
+{% block head %}
+<script src="{{url_for('static',filename='js/assign_tasks.js')}}"></script>
+<link rel="stylesheet" href="{{url_for('static',filename='css/assign_tasks.css')}}">
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>分配任务</h1>
+
+    <!-- 任务统计 -->
+    <h2>任务统计</h2>
+    <p>未完成订单数量: {{ stats.unfinished_orders }}</p>
+    <p>已完成订单数量: {{ stats.finished_orders }}</p>
+
+    <!-- 任务分配表 -->
+    <table border="1" class="table" style="border-collapse: collapse; width: 100%; table-layout: fixed;">
+        <thead>
+            <tr style="height: 30px;">
+                <th>任务 ID</th>
+                <th>处方 ID</th>
+                <th>当前阶段状态</th>
+                <th>收方工人</th>
+                <th>配方工人</th>
+                <th>煎药工人</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody id="taskTable">
+            {% for task in tasks %}
+            <tr class="task-row" style="height: 60px;">
+                <td style="text-align: center;">{{ task.task_id }}</td>
+                <td style="text-align: center;">{{ task.prescription_id }}</td>
+                <td style="text-align: center;">{{ task.phase_status }}</td>
+                <td style="text-align: center;">
+                    <span class="worker-name
+                            {% if task.receive_time %}
+                                completed
+                            {% elif task.receive_worker_id %}
+                                uncompleted
+                            {% else %}
+                                unassigned
+                            {% endif %}">
+                        {{ task.receive_worker_name or '未分配' }}
+                    </span>
+                </td>
+                <td style="text-align: center;">
+                    <span class="worker-name
+                            {% if task.form_time %}
+                                completed
+                            {% elif task.form_worker_id %}
+                                uncompleted
+                            {% else %}
+                                unassigned
+                            {% endif %}">
+                        {{ task.form_worker_name or '未分配' }}
+                    </span>
+                </td>
+                <td style="text-align: center;">
+                    <span class="worker-name
+                            {% if task.decoction_end_time %}
+                                completed
+                            {% elif task.decoction_worker_id %}
+                                uncompleted
+                            {% else %}
+                                unassigned
+                            {% endif %}">
+                        {{ task.decoction_worker_name or '未分配' }}
+                    </span>
+                </td>
+                <td style="text-align: center;">
+                    {% if task.status != '完成' %}
+                    <form method="POST" action="{{ url_for('assign_tasks') }}" style="margin-bottom: 5px;">
+                        <input type="hidden" name="task_id" value="{{ task.task_id }}">
+                        <input type="hidden" name="operation" value="assign">
+
+                        <div style="display: flex; align-items: center; gap: 5px; justify-content: center;">
+                            <select name="task_type" style="width: 120px; height: 22px; font-size: 12px;" required>
+                                <option value="receive" {% if task.receive_time %}disabled{% endif %}>收方</option>
+                                <option value="formulate" {% if task.form_time %}disabled{% endif %}>配方</option>
+                                <option value="decoction" {% if task.decoction_end_time %}disabled{% endif %}>煎药
+                                </option>
+                            </select>
+                            <select name="worker_id" style="width: 120px; height: 22px; font-size: 12px;" required>
+                                {% for worker in workers %}
+                                <option value="{{ worker.worker_id }}">{{ worker.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit"
+                            style="margin-top: 5px; font-size: 11px; padding: 3px 8px; width: 70px; height: 25px;">分配</button>
+                    </form>
+
+                    <button class="small-button"
+                        style="background-color: red; color: white; border: none; padding: 3px 8px; cursor: pointer; margin-top: 5px; width: 70px; height: 25px;"
+                        data-task-id="{{ task.task_id }}"
+                        data-receive-completed="{{ 'true' if task.receive_time else 'false' }} "
+                        data-form-completed="{{ 'true' if task.form_time else 'false' }}"
+                        data-decoction-started="{{ 'true' if task.decoction_start_time else 'false' }}"
+                        data-decoction-ended="{{ 'true' if task.decoction_end_time else 'false' }}"
+                        onclick="openRollbackModal(this)">回退</button>
+                    {% else %}
+                    <span>任务已完成</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- 分页 -->
+<div class="pagination" id="pagination"></div>
+
+<!-- 回退任务弹窗 -->
+<div id="rollbackModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeRollbackModal()">&times;</span>
+        <h2>回退任务</h2>
+        <form method="POST" action="{{ url_for('assign_tasks') }}">
+            <input type="hidden" name="task_id" id="rollbackTaskId">
+            <input type="hidden" name="operation" value="rollback">
+
+            <label for="rollback_phase">选择回退阶段:</label>
+            <select name="rollback_phase" id="rollback_phase" required>
+                <option value="receive">回退到收方前</option>
+                <option value="formulate">回退到配方阶段</option>
+                <option value="decoction_start">回退到煎药开始</option>
+                <option value="decoction_end">回退到煎药结束</option>
+            </select>
+
+            <label for="rollback_password">确认密码:</label>
+            <input type="password" name="rollback_password" id="rollback_password" required>
+            <button type="submit">确认回退</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

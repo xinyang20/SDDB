@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}处方详情{% endblock %}
+
+{% block body %}
+<h1>处方详情</h1>
+
+<!-- 显示处方详情 -->
+<h2>基本信息</h2>
+<table>
+    <tr>
+        <th>处方 ID</th>
+        <td>{{ prescription.prescription_id }}</td>
+    </tr>
+    <tr>
+        <th>患者 ID</th>
+        <td>{{ prescription.patient_id }}</td>
+    </tr>
+    <tr>
+        <th>金额</th>
+        <td>{{ prescription.amount }}</td>
+    </tr>
+    <tr>
+        <th>状态</th>
+        <td>{{ prescription.status }}</td>
+    </tr>
+    <tr>
+        <th>开方时间</th>
+        <td>{{ prescription.date }}</td>
+    </tr>
+    <tr>
+        <th>预计取药时间</th>
+        <td>{{ prescription.expected_pickup_time }}</td>
+    </tr>
+    <tr>
+        <th>用药说明</th>
+        <td>{{ prescription.usage_instructions }}</td>
+    </tr>
+</table>
+
+<!-- 显示任务详情 -->
+{% if task %}
+<h2>任务信息</h2>
+<table>
+    <tr>
+        <th>任务 ID</th>
+        <td>{{ task.task_id }}</td>
+    </tr>
+    <tr>
+        <th>收方工人</th>
+        <td style="color: {{ 'green' if task.receive_time else 'red' }}">{{ task.receive_worker_name or '未分配' }}</td>
+    </tr>
+    <tr>
+        <th>配方工人</th>
+        <td style="color: {{ 'green' if task.form_time else 'red' }}">{{ task.form_worker_name or '未分配' }}</td>
+    </tr>
+    <tr>
+        <th>煎药工人</th>
+        <td style="color: {{ 'green' if task.decoction_start_time else 'red' }}">{{ task.decoction_worker_name or '未分配'
+            }}</td>
+    </tr>
+    <tr>
+        <th>收方时间</th>
+        <td>{{ task.receive_time or '未完成' }}</td>
+    </tr>
+    <tr>
+        <th>配方时间</th>
+        <td>{{ task.form_time or '未完成' }}</td>
+    </tr>
+    <tr>
+        <th>煎药开始时间</th>
+        <td>{{ task.decoction_start_time or '未开始' }}</td>
+    </tr>
+    <tr>
+        <th>煎药结束时间</th>
+        <td>{{ task.decoction_end_time or '未完成' }}</td>
+    </tr>
+    <tr>
+        <th>任务状态</th>
+        <td>{{ task.status }}</td>
+    </tr>
+</table>
+{% else %}
+<p>尚未为此处方分配任务。</p>
+{% endif %}
+{% endblock %}

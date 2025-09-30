@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}首页 - 中药代煎系统{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+    <!-- 欢迎区域 -->
+    <div class="dashboard-welcome">
+        <h1>欢迎回来，{{ session.get('name', session.get('username', '用户')) }}</h1>
+        <p>当前角色：
+            {% if session.get('role') == 'admin' %}
+            <span style="color: var(--primary-color); font-weight: 600;">系统管理员</span>
+            {% elif session.get('role') == 'doctor' %}
+            <span style="color: var(--success-color); font-weight: 600;">医生</span>
+            {% elif session.get('role') == 'patient' %}
+            <span style="color: var(--warning-color); font-weight: 600;">患者</span>
+            {% elif session.get('role') == 'worker' %}
+            <span style="color: var(--secondary-color); font-weight: 600;">工作人员</span>
+            {% else %}
+            <span style="color: var(--gray-500);">未知</span>
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- 功能卡片 -->
+    <div class="dashboard-options">
+        {% if session.get('role') == 'admin' %}
+        <div class="dashboard-card">
+            <h3>用户管理</h3>
+            <ul>
+                <li><a href="/admin/users">管理用户账户</a></li>
+            </ul>
+        </div>
+        <div class="dashboard-card">
+            <h3>任务管理</h3>
+            <ul>
+                <li><a href="/admin/assign_tasks">分配和管理任务</a></li>
+            </ul>
+        </div>
+
+        {% elif session.get('role') == 'doctor' %}
+        <div class="dashboard-card">
+            <h3>处方管理</h3>
+            <ul>
+                <li><a href="/doctor/prescriptions">查看我的处方</a></li>
+                <li><a href="/doctor/prescriptions/new">开具新处方</a></li>
+            </ul>
+        </div>
+
+        {% elif session.get('role') == 'patient' %}
+        <div class="dashboard-card">
+            <h3>我的处方</h3>
+            <ul>
+                <li><a href="/patient/prescriptions">查看处方状态</a></li>
+            </ul>
+        </div>
+
+        {% elif session.get('role') == 'worker' %}
+        <div class="dashboard-card">
+            <h3>工作任务</h3>
+            <ul>
+                <li><a href="/worker/tasks">查看分配给我的任务</a></li>
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- 通用功能卡片 -->
+        {% if session.get('role') %}
+        <div class="dashboard-card">
+            <h3>个人设置</h3>
+            <ul>
+                <li><a href="/profile/">编辑个人信息</a></li>
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

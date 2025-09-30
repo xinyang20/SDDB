@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}注册{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h2>用户注册</h2>
+
+    <!-- Flash 消息 -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="flash-message {% if category == 'danger' %}flash-message-danger{% else %}flash-message{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <!-- 注册表单 -->
+    <form method="POST" action="/register" id="registerForm">
+        <label for="username">用户名:</label>
+        <input type="text" id="username" name="username" placeholder="请输入用户名" required>
+
+        <label for="password">密码:</label>
+        <input type="password" id="password" name="password" placeholder="请输入密码" required>
+
+        <label for="name">姓名:</label>
+        <input type="text" id="name" name="name" placeholder="请输入姓名" required>
+
+        <label for="gender">性别:</label>
+        <select name="gender" id="gender" required>
+            <option value="">请选择性别</option>
+            <option value="男">男</option>
+            <option value="女">女</option>
+        </select>
+
+        <label for="age">年龄:</label>
+        <input type="number" id="age" name="age" placeholder="请输入年龄" required>
+
+        <label for="contact_number">联系方式:</label>
+        <input type="text" id="contact_number" name="contact_number" placeholder="请输入联系方式" required>
+
+        <input type="hidden" name="role" value="patient"> <!-- 固定角色为患者 -->
+
+        <button type="submit">注册</button>
+    </form>
+</div>
+{% endblock %}

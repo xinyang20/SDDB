@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}个人信息{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/profile.css')}}">
+<script src="{{url_for('static',filename='js/profile.js')}}"></script>
+{% endblock %}
+
+{% block body %}
+<h1>个人信息</h1>
+<table>
+    <tr>
+        <th>UUID</th>
+        <td>{{ session.get('user_id') }}</td>
+    </tr>
+    <!-- 显示个人信息 -->
+    {% if role.admin_id %}
+    <tr>
+        <th>管理员 ID</th>
+        <td>{{ role.admin_id }}</td>
+    </tr>
+    <tr>
+        <th>姓名</th>
+        <td>{{ role.name }}</td>
+    </tr>
+    <tr>
+        <th>联系方式</th>
+        <td>{{ role.contact_number }}</td>
+    </tr>
+    {% elif role.doctor_id %}
+    <tr>
+        <th>医生 ID</th>
+        <td>{{ role.doctor_id }}</td>
+    </tr>
+    <tr>
+        <th>姓名</th>
+        <td>{{ role.name }}</td>
+    </tr>
+    <tr>
+        <th>性别</th>
+        <td>{{ role.gender }}</td>
+    </tr>
+    <tr>
+        <th>科室</th>
+        <td>{{ role.department }}</td>
+    </tr>
+    <tr>
+        <th>职称</th>
+        <td>{{ role.title }}</td>
+    </tr>
+    <tr>
+        <th>联系方式</th>
+        <td>{{ role.contact_number }}</td>
+    </tr>
+    {% elif role.patient_id %}
+    <!-- 显示患者信息 -->
+    <tr>
+        <th>患者 ID</th>
+        <td>{{ role.patient_id }}</td>
+    </tr>
+    <tr>
+        <th>姓名</th>
+        <td>{{ role.name }}</td>
+    </tr>
+    <tr>
+        <th>性别</th>
+        <td>{{ role.gender }}</td>
+    </tr>
+    <tr>
+        <th>年龄</th>
+        <td>{{ role.age }}</td>
+    </tr>
+    <tr>
+        <th>联系方式</th>
+        <td>{{ role.contact_number }}</td>
+    </tr>
+    {% elif role.worker_id %}
+    <tr>
+        <th>工人 ID</th>
+        <td>{{ role.worker_id }}</td>
+    </tr>
+    <tr>
+        <th>姓名</th>
+        <td>{{ role.name }}</td>
+    </tr>
+    <tr>
+        <th>年龄</th>
+        <td>{{ role.age }}</td>
+    </tr>
+    <tr>
+        <th>联系方式</th>
+        <td>{{ role.contact_number }}</td>
+    </tr>
+    {% endif %}
+</table>
+{% if role.admin_id or role.doctor_id or role.patient_id %}
+<!-- 居中的编辑按钮 -->
+<div style="margin-top: 20px; text-align: center;">
+    <button class="edit-button" onclick="openModal()">编辑信息</button>
+</div>
+{% endif %}
+
+<div class="modal" id="editModal">
+    <form method="POST">
+        <div class="modal-header">编辑个人信息</div>
+        {% if role.admin_id %}
+        <!-- 编辑管理员信息弹窗 -->
+        <input type="text" id="name" name="name" placeholder="姓名" value="{{ role.name }}" required>
+        <input type="text" id="contact_number" name="contact_number" placeholder="联系方式"
+            value="{{ role.contact_number }}" required>
+        {% elif role.doctor_id %}
+        <!-- 编辑医生信息弹窗 -->
+        <label for="name">姓名:</label>
+        <input type="text" id="name" name="name" value="{{ role.name }}" required>
+
+        <label for="gender">性别:</label>
+        <select id="gender" name="gender" required>
+            <option value="男" {% if role.gender=='男' %}selected{% endif %}>男</option>
+            <option value="女" {% if role.gender=='女' %}selected{% endif %}>女</option>
+        </select>
+
+        <label for="department">科室:</label>
+        <select id="department" name="department" required>
+            <option value="内科" {% if role.department=='内科' %}selected{% endif %}>内科</option>
+            <option value="外科" {% if role.department=='外科' %}selected{% endif %}>外科</option>
+            <option value="儿科" {% if role.department=='儿科' %}selected{% endif %}>儿科</option>
+            <option value="妇科" {% if role.department=='妇科' %}selected{% endif %}>妇科</option>
+        </select>
+
+        <label for="title">职称:</label>
+        <select id="title" name="title" required>
+            <option value="主任医师" {% if role.title=='主任医师' %}selected{% endif %}>主任医师</option>
+            <option value="副主任医师" {% if role.title=='副主任医师' %}selected{% endif %}>副主任医师</option>
+            <option value="主治医师" {% if role.title=='主治医师' %}selected{% endif %}>主治医师</option>
+            <option value="住院医师" {% if role.title=='住院医师' %}selected{% endif %}>住院医师</option>
+        </select>
+
+        <label for="contact_number">联系方式:</label>
+        <input type="text" id="contact_number" name="contact_number" value="{{ role.contact_number }}" required>
+        {% elif role.patient_id %}
+        <!-- 编辑患者信息弹窗 -->
+        <label for="name">姓名:</label>
+        <input type="text" id="name" name="name" value="{{ role.name }}" required>
+
+        <label for="gender">性别:</label>
+        <select id="gender" name="gender" required>
+            <option value="男" {% if role.gender=='男' %}selected{% endif %}>男</option>
+            <option value="女" {% if role.gender=='女' %}selected{% endif %}>女</option>
+        </select>
+
+        <label for="age">年龄:</label>
+        <input type="number" id="age" name="age" value="{{ role.age }}" min="0" required>
+
+        <label for="contact_number">联系方式:</label>
+        <input type="text" id="contact_number" name="contact_number" value="{{ role.contact_number }}" required>
+        {% endif %}
+        <div class="modal-buttons">
+            <button type="submit" class="save-button">保存修改</button>
+            <button type="button" class="close-button" onclick="closeModal()">取消</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}编辑用户{% endblock %}
+
+{% block body %}
+<h1>编辑用户 - {{ user.username }}</h1>
+<form method="POST">
+    <label for="username">用户名:</label>
+    <input type="text" id="username" name="username" value="{{ user.username }}" required>
+
+    <label for="password">密码:</label>
+    <input type="text" id="password" name="password" value="{{ user.password }}" required>
+
+    <label for="role">角色:</label>
+    <select id="role" name="role">
+        <option value="patient" {% if user.role=='patient' %}selected{% endif %}>患者</option>
+        <option value="doctor" {% if user.role=='doctor' %}selected{% endif %}>医生</option>
+        <option value="worker" {% if user.role=='worker' %}selected{% endif %}>工人</option>
+        <option value="admin" {% if user.role=='admin' %}selected{% endif %}>管理员</option>
+    </select>
+
+    {% if user.role == 'patient' %}
+    <h3>患者信息</h3>
+    <label for="patient_name">姓名:</label>
+    <input type="text" id="patient_name" name="patient_name" value="{{ patient.name }}">
+
+    <label for="patient_gender">性别:</label>
+    <select id="patient_gender" name="patient_gender">
+        <option value="男" {% if patient.gender=='男' %}selected{% endif %}>男</option>
+        <option value="女" {% if patient.gender=='女' %}selected{% endif %}>女</option>
+    </select>
+
+    <label for="patient_age">年龄:</label>
+    <input type="number" id="patient_age" name="patient_age" value="{{ patient.age }}">
+
+    <label for="patient_contact">联系方式:</label>
+    <input type="text" id="patient_contact" name="patient_contact" value="{{ patient.contact_number }}">
+    {% elif user.role == 'doctor' %}
+    <h3>医生信息</h3>
+    <label for="doctor_name">姓名:</label>
+    <input type="text" id="doctor_name" name="doctor_name" value="{{ doctor.name }}">
+
+    <label for="doctor_gender">性别:</label>
+    <select id="doctor_gender" name="doctor_gender">
+        <option value="男" {% if doctor.gender=='男' %}selected{% endif %}>男</option>
+        <option value="女" {% if doctor.gender=='女' %}selected{% endif %}>女</option>
+    </select>
+
+    <label for="doctor_department">科室:</label>
+    <input type="text" id="doctor_department" name="doctor_department" value="{{ doctor.department }}">
+
+    <label for="doctor_title">职称:</label>
+    <input type="text" id="doctor_title" name="doctor_title" value="{{ doctor.title }}">
+
+    <label for="doctor_contact">联系方式:</label>
+    <input type="text" id="doctor_contact" name="doctor_contact" value="{{ doctor.contact_number }}">
+    {% elif user.role == 'worker' %}
+    <h3>工人信息</h3>
+    <label for="worker_name">姓名:</label>
+    <input type="text" id="worker_name" name="worker_name" value="{{ worker.name }}">
+
+    <label for="worker_age">年龄:</label>
+    <input type="number" id="worker_age" name="worker_age" value="{{ worker.age }}">
+
+    <label for="worker_contact">联系方式:</label>
+    <input type="text" id="worker_contact" name="worker_contact" value="{{ worker.contact_number }}">
+    {% elif user.role == 'admin' %}
+    <h3>管理员信息</h3>
+    <label for="admin_name">姓名:</label>
+    <input type="text" id="admin_name" name="admin_name" value="{{ admin.name }}">
+
+    <label for="admin_contact">联系方式:</label>
+    <input type="text" id="admin_contact" name="admin_contact" value="{{ admin.contact_number }}">
+    {% endif %}
+
+    <button type="submit">保存修改</button>
+</form>
+{% endblock %}

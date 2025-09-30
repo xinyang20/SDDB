@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}中药代煎系统{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <!-- 导航栏组件 -->
+    {% include 'components/navbar.html' %}
+
+    <!-- Flash消息组件 -->
+    {% include 'components/flash_messages.html' %}
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+        {% block body %}{% endblock %}
+    </main>
+
+    <!-- 页脚组件 -->
+    {% include 'components/footer.html' %}
+
+    <!-- 页面特定的JavaScript -->
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

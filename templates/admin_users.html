@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}用户管理{% endblock %}
+
+{% block head %}
+<script src="{{url_for('static',filename='js/admin_user.js')}}"></script>
+<link rel="stylesheet" href="{{url_for('static',filename='css/admin_user.css')}}">
+{% endblock %}
+
+{% block body %}
+<h2>用户管理</h2>
+<form method="POST" action="/admin/users" style="margin-bottom: 20px;">
+    <h3 align="center">添加用户</h3>
+    <label for="username">用户名:</label>
+    <input type="text" id="username" name="username" placeholder="用户名" required oninput="checkUsername()">
+    <span id="username-message" style="font-size: 0.9em; color: gray;">请输入用户名</span>
+
+    <label for="password">密码:</label>
+    <input type="text" id="password" name="password" placeholder="密码" value="123456" required>
+
+    <label for="role-select">角色:</label>
+    <select name="role" id="role-select" onchange="updateRoleForm()" required>
+        <option value="">选择角色</option>
+        <option value="patient">患者</option>
+        <option value="worker">工人</option>
+        <option value="admin">管理员</option>
+    </select>
+
+    <div id="role-form"></div>
+    <button type="submit">添加用户</button>
+</form>
+
+<div class="filter-container">
+    <h3>用户信息</h3>
+    <form method="GET" action="/admin/users" style="display: flex; align-items: center; gap: 20px;">
+        <div>
+            <label for="role-filter">角色:</label>
+            <select name="role" id="role-filter">
+                <option value="all" {% if selected_role=='all' %}selected{% endif %}>所有角色</option>
+                <option value="patient" {% if selected_role=='patient' %}selected{% endif %}>患者</option>
+                <option value="doctor" {% if selected_role=='doctor' %}selected{% endif %}>医生</option>
+                <option value="worker" {% if selected_role=='worker' %}selected{% endif %}>工人</option>
+                <option value="admin" {% if selected_role=='admin' %}selected{% endif %}>管理员</option>
+            </select>
+        </div>
+        <div>
+            <label for="username-search">用户名:</label>
+            <input type="text" id="username-search" name="username" placeholder="输入用户名"
+                value="{{ request.args.get('username', '') }}">
+        </div>
+        <button type="submit">查询</button>
+    </form>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>UUID</th>
+            <th>用户名</th>
+            <th>角色</th>
+            <th>角色 ID</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody id="userTable">
+        {% for user in users %}
+        <tr class="user-row">
+            <td>{{ user.uuid }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.role }}</td>
+            <td>{{ user.role_id }}</td>
+            <td>
+                <a href="/admin/users/edit/{{ user.uuid }}">编辑</a>
+                <button class="delete-button" onclick="openDeleteModal('{{ user.uuid }}')">删除</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination">
+    {% for page_num in range(1, total_pages + 1) %}
+    <button class="{{ 'active' if page_num == current_page else '' }}" onclick="changePage({{ page_num }})">{{ page_num
+        }}</button>
+    {% endfor %}
+</div>
+
+<!-- 删除确认弹窗 -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeDeleteModal()">&times;</span>
+        <h2>确认删除用户</h2>
+        <form id="deleteForm" method="POST" action="">
+            <label for="deletePassword">输入密码确认:</label>
+            <input type="password" id="deletePassword" name="password" required>
+            <button type="submit">确认删除</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

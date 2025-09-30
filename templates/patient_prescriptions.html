@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}我的处方{% endblock %}
+
+{% block body %}
+<h1>我的处方</h1>
+
+<!-- 显示处方列表 -->
+<table>
+    <thead>
+        <tr>
+            <th>处方 ID</th>
+            <th>金额</th>
+            <th>状态</th>
+            <th>开方时间</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in prescriptions %}
+        <tr>
+            <td>{{ item.prescription.prescription_id }}</td>
+            <td>{{ item.prescription.amount }}</td>
+            <td>{{ item.status }}</td>
+            <td>{{ item.prescription.date }}</td>
+            <td>
+                <a href="/patient/prescriptions/view/{{ item.prescription.prescription_id }}">查看详情</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}登录 - 中药代煎系统{% endblock %}
+
+{% block body %}
+<div class="container-sm">
+    <div class="form-container">
+        <div class="text-center mb-6">
+            <h1>用户登录</h1>
+            <p>请输入您的账户信息</p>
+        </div>
+
+        <form method="POST" action="/login/">
+            <div class="form-group">
+                <label for="username" class="form-label">用户名</label>
+                <input type="text" id="username" name="username" class="form-input" placeholder="请输入用户名" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">密码</label>
+                <input type="password" id="password" name="password" class="form-input" placeholder="请输入密码" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full btn-lg">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 0.5rem;">
+                    <path fill-rule="evenodd"
+                        d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+                </svg>
+                登录
+            </button>
+        </form>
+
+        <div class="text-center mt-6">
+            <p>还没有账号？<a href="/register">立即注册</a></p>
+        </div>
+
+        <!-- 测试账户提示 -->
+        <div class="mt-8"
+            style="padding: 1rem; background-color: var(--gray-100); border-radius: var(--radius-md); font-size: var(--font-size-sm);">
+            <h4 style="margin-bottom: 0.5rem; color: var(--gray-700);">测试账户</h4>
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; color: var(--gray-600);">
+                <div><strong>管理员:</strong> admin / admin123</div>
+                <div><strong>医生:</strong> doctor1 / 123456</div>
+                <div><strong>患者:</strong> patient1 / 123456</div>
+                <div><strong>工人:</strong> worker1 / 123456</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
