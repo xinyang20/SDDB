@@ -55,7 +55,7 @@ SDDB (Smart Decoction Database) is a modern management platform designed specifi
 
    ```bash
    git clone https://github.com/xinyang20/SDDB.git
-   cd SDDB
+   cd sddb/src
    ```
 
 2. **Install dependencies**
@@ -201,19 +201,25 @@ The system includes the following main data tables:
 ### Project Structure Description
 
 ```
-SDDB/
-├── app.py              # Flask application main file
-├── config.py           # Configuration file
-├── exts.py            # Flask extensions initialization
-├── models.py          # Database model definitions
-├── init_db.py         # Database initialization script
-├── pyproject.toml     # Project dependency configuration
-├── static/            # Static resources
-│   ├── css/          # Style files
-│   └── js/           # JavaScript files
-└── templates/         # HTML templates
-    ├── components/   # Reusable components
-    └── *.html       # Page templates
+SDDB
+├─ .python-version      # Python version file
+├─ LICENSE              # License file
+├─ pyproject.toml       # Project dependency configuration
+├─ README.md            # Project description file
+├─ README_en.md         # Project description file (English)
+├─ src                  # Source code directory
+│  ├─ app.py            # Flask application main file
+│  ├─ config.py         # Configuration file
+│  ├─ exts.py           # Flask extension initialization
+│  ├─ init_db.py        # Database initialization script
+│  ├─ models.py         # Database model definitions
+│  ├─ static            # Static resources
+│  │  ├─ css/           # Style files
+│  │  └─ js/            # JavaScript files
+│  └── templates/       # HTML templates
+│      ├── components/  # Reusable components
+│      └── *.html       # Page templates
+└─ uv.lock              # UV lock file
 ```
 
 ### Adding New Features

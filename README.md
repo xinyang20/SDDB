@@ -55,7 +55,7 @@ SDDB (Smart Decoction Database) 是一个专为中药代煎中心设计的现代
 
    ```bash
    git clone https://github.com/xinyang20/SDDB.git
-   cd SDDB
+   cd sddb/src
    ```
 
 2. **安装依赖**
@@ -201,19 +201,25 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key-change-in-production'
 ### 项目结构说明
 
 ```
-SDDB/
-├── app.py              # Flask 应用主文件
-├── config.py           # 配置文件
-├── exts.py            # Flask 扩展初始化
-├── models.py          # 数据库模型定义
-├── init_db.py         # 数据库初始化脚本
-├── pyproject.toml     # 项目依赖配置
-├── static/            # 静态资源
-│   ├── css/          # 样式文件
-│   └── js/           # JavaScript 文件
-└── templates/         # HTML 模板
-    ├── components/   # 可复用组件
-    └── *.html       # 页面模板
+SDDB
+├─ .python-version      # Python 版本文件
+├─ LICENSE              # 许可证文件
+├─ pyproject.toml       # 项目依赖配置
+├─ README.md            # 项目说明文件
+├─ README_en.md         # 项目说明文件(英文)
+├─ src                  # 源代码目录
+│  ├─ app.py            # Flask 应用主文件
+│  ├─ config.py         # 配置文件
+│  ├─ exts.py           # Flask 扩展初始化
+│  ├─ init_db.py        # 数据库初始化脚本
+│  ├─ models.py         # 数据库模型定义
+│  ├─ static            # 静态资源
+│  │  ├─ css/           # 样式文件
+│  │  └─ js/            # JavaScript 文件
+│  └── templates/       # HTML 模板
+│      ├── components/  # 可复用组件
+│      └── *.html       # 页面模板
+└─ uv.lock              # UV 锁定文件
 ```
 
 ### 添加新功能
