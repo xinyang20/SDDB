@@ -1,67 +1,101 @@
 .worker-name.completed {
-    color: green;
+  color: green;
 }
 
 .worker-name.uncompleted {
-    color: red;
+  color: red;
 }
 
 .worker-name.unassigned {
-    color: #ffb700;
+  color: #666666;
 }
 
 .small-button {
-    padding: 5px 10px;
-    font-size: 12px;
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+/* 任务分配表单样式 */
+select[name="task_type"],
+select[name="worker_id"] {
+  color: #000000 !important;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+}
+
+select[name="task_type"] option,
+select[name="worker_id"] option {
+  color: #000000;
+  background-color: #ffffff;
+}
+
+/* 分配按钮样式 */
+button[type="submit"] {
+  background-color: #5397f4 !important;
+  color: white !important;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #3d7dd6 !important;
 }
 
 .modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 30%;
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 30%;
 }
 
 .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
 }
 
 .close:hover,
 .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .pagination {
-    text-align: center;
-    margin: 20px 0;
+  text-align: center;
+  margin: 20px 0;
 }
 
 .pagination button {
-    margin: 0 5px;
-    padding: 5px 10px;
-    font-size: 14px;
+  margin: 0 5px;
+  padding: 5px 10px;
+  font-size: 14px;
 }
 
 .pagination button.active {
-    background-color: #007bff;
-    color: white;
-    border: none;
+  background-color: #5397f4;
+  color: white;
+  border: none;
+}
+
+/* 统计卡片悬停效果 */
+.metric-card:hover {
+  transform: translateY(-5px);
 }

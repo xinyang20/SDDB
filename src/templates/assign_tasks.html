@@ -9,12 +9,28 @@
 
 {% block body %}
 <div class="container">
-    <h1>分配任务</h1>
-
-    <!-- 任务统计 -->
-    <h2>任务统计</h2>
-    <p>未完成订单数量: {{ stats.unfinished_orders }}</p>
-    <p>已完成订单数量: {{ stats.finished_orders }}</p>
+    <!-- 任务统计 - 使用卡片样式 -->
+    <div class="metrics-grid"
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px;">
+        <div class="metric-card"
+            style="background: #5397f4; border-radius: 12px; padding: 24px; color: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: transform 0.3s ease;">
+            <h3 style="font-size: 14px; font-weight: 500; margin: 0 0 12px 0; opacity: 0.9; color: white;">未完成订单</h3>
+            <p class="metric-value" style="font-size: 36px; font-weight: 700; margin: 0; color: white;">{{
+                stats.unfinished_orders }}</p>
+        </div>
+        <div class="metric-card"
+            style="background: #5397f4; border-radius: 12px; padding: 24px; color: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: transform 0.3s ease;">
+            <h3 style="font-size: 14px; font-weight: 500; margin: 0 0 12px 0; opacity: 0.9; color: white;">已完成订单</h3>
+            <p class="metric-value" style="font-size: 36px; font-weight: 700; margin: 0; color: white;">{{
+                stats.finished_orders }}</p>
+        </div>
+        <div class="metric-card"
+            style="background: #5397f4; border-radius: 12px; padding: 24px; color: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: transform 0.3s ease;">
+            <h3 style="font-size: 14px; font-weight: 500; margin: 0 0 12px 0; opacity: 0.9; color: white;">总订单数</h3>
+            <p class="metric-value" style="font-size: 36px; font-weight: 700; margin: 0; color: white;">{{
+                stats.unfinished_orders + stats.finished_orders }}</p>
+        </div>
+    </div>
 
     <!-- 任务分配表 -->
     <table border="1" class="table" style="border-collapse: collapse; width: 100%; table-layout: fixed;">
@@ -73,35 +89,46 @@
                 </td>
                 <td style="text-align: center;">
                     {% if task.status != '完成' %}
-                    <form method="POST" action="{{ url_for('assign_tasks') }}" style="margin-bottom: 5px;">
-                        <input type="hidden" name="task_id" value="{{ task.task_id }}">
-                        <input type="hidden" name="operation" value="assign">
+                    <div
+                        style="display: flex; align-items: center; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                        <form method="POST" action="{{ url_for('admin.assign_tasks') }}"
+                            style="margin: 0; display: flex; gap: 5px; align-items: center;">
+                            <input type="hidden" name="task_id" value="{{ task.task_id }}">
+                            <input type="hidden" name="operation" value="assign">
 
-                        <div style="display: flex; align-items: center; gap: 5px; justify-content: center;">
-                            <select name="task_type" style="width: 120px; height: 22px; font-size: 12px;" required>
-                                <option value="receive" {% if task.receive_time %}disabled{% endif %}>收方</option>
-                                <option value="formulate" {% if task.form_time %}disabled{% endif %}>配方</option>
-                                <option value="decoction" {% if task.decoction_end_time %}disabled{% endif %}>煎药
-                                </option>
+                            <select name="task_type"
+                                style="width: 90px; height: 28px; font-size: 12px; color: #000000; background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 4px;"
+                                required>
+                                <option value="" selected disabled style="color: #666;">选择工序</option>
+                                <option value="receive" {% if task.receive_time %}disabled{% endif %}
+                                    style="color: #000000;">收方</option>
+                                <option value="formulate" {% if task.form_time %}disabled{% endif %}
+                                    style="color: #000000;">配方</option>
+                                <option value="decoction" {% if task.decoction_end_time %}disabled{% endif %}
+                                    style="color: #000000;">煎药</option>
                             </select>
-                            <select name="worker_id" style="width: 120px; height: 22px; font-size: 12px;" required>
+                            <select name="worker_id"
+                                style="width: 90px; height: 28px; font-size: 12px; color: #000000; background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 4px;"
+                                required>
+                                <option value="" selected disabled style="color: #666;">选择工人</option>
                                 {% for worker in workers %}
-                                <option value="{{ worker.worker_id }}">{{ worker.name }}</option>
+                                <option value="{{ worker.worker_id }}" style="color: #000000;">{{ worker.name }}
+                                </option>
                                 {% endfor %}
                             </select>
-                        </div>
-                        <button type="submit"
-                            style="margin-top: 5px; font-size: 11px; padding: 3px 8px; width: 70px; height: 25px;">分配</button>
-                    </form>
+                            <button type="submit"
+                                style="font-size: 12px; padding: 4px 12px; height: 28px; white-space: nowrap;">分配</button>
+                        </form>
 
-                    <button class="small-button"
-                        style="background-color: red; color: white; border: none; padding: 3px 8px; cursor: pointer; margin-top: 5px; width: 70px; height: 25px;"
-                        data-task-id="{{ task.task_id }}"
-                        data-receive-completed="{{ 'true' if task.receive_time else 'false' }} "
-                        data-form-completed="{{ 'true' if task.form_time else 'false' }}"
-                        data-decoction-started="{{ 'true' if task.decoction_start_time else 'false' }}"
-                        data-decoction-ended="{{ 'true' if task.decoction_end_time else 'false' }}"
-                        onclick="openRollbackModal(this)">回退</button>
+                        <button class="small-button"
+                            style="background-color: #dc2626; color: white; border: none; padding: 4px 12px; cursor: pointer; height: 28px; font-size: 12px; border-radius: 4px;"
+                            data-task-id="{{ task.task_id }}"
+                            data-receive-completed="{{ 'true' if task.receive_time else 'false' }} "
+                            data-form-completed="{{ 'true' if task.form_time else 'false' }}"
+                            data-decoction-started="{{ 'true' if task.decoction_start_time else 'false' }}"
+                            data-decoction-ended="{{ 'true' if task.decoction_end_time else 'false' }}"
+                            onclick="openRollbackModal(this)">回退</button>
+                    </div>
                     {% else %}
                     <span>任务已完成</span>
                     {% endif %}
@@ -120,7 +147,7 @@
     <div class="modal-content">
         <span class="close" onclick="closeRollbackModal()">&times;</span>
         <h2>回退任务</h2>
-        <form method="POST" action="{{ url_for('assign_tasks') }}">
+        <form method="POST" action="{{ url_for('admin.assign_tasks') }}">
             <input type="hidden" name="task_id" id="rollbackTaskId">
             <input type="hidden" name="operation" value="rollback">
 

@@ -94,10 +94,10 @@
     </tr>
     {% endif %}
 </table>
-{% if role.admin_id or role.doctor_id or role.patient_id %}
+{% if role.admin_id or role.doctor_id or role.patient_id or role.worker_id %}
 <!-- 居中的编辑按钮 -->
 <div style="margin-top: 20px; text-align: center;">
-    <button class="edit-button" onclick="openModal()">编辑信息</button>
+    <button class="edit-button btn-action" onclick="openModal()">编辑信息</button>
 </div>
 {% endif %}
 
@@ -154,10 +154,21 @@
 
         <label for="contact_number">联系方式:</label>
         <input type="text" id="contact_number" name="contact_number" value="{{ role.contact_number }}" required>
+        {% elif role.worker_id %}
+        <!-- 编辑工人信息弹窗 -->
+        <label for="name">姓名:</label>
+        <input type="text" id="name" name="name" value="{{ role.name }}" required>
+
+        <label for="age">年龄:</label>
+        <input type="number" id="age" name="age" value="{{ role.age }}" min="0" required>
+
+        <label for="contact_number">联系方式:</label>
+        <input type="text" id="contact_number" name="contact_number" value="{{ role.contact_number }}" required>
         {% endif %}
         <div class="modal-buttons">
-            <button type="submit" class="save-button">保存修改</button>
-            <button type="button" class="close-button" onclick="closeModal()">取消</button>
+            <button type="submit" class="save-button btn-action">保存修改</button>
+            <button type="button" class="close-button btn-action" style="background-color: #6b7280;"
+                onclick="closeModal()">取消</button>
         </div>
     </form>
 </div>

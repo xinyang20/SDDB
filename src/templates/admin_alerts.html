@@ -1,0 +1,312 @@
+{% extends 'base.html' %}
+
+{% block title %}告警管理{% endblock %}
+
+{% block head %}
+<style>
+    .alerts-container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .alerts-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .unread-badge {
+        background: #ef4444;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 14px;
+        margin-left: 10px;
+    }
+
+    .alerts-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .alert-item {
+        background: white;
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .alert-item:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .alert-item.unread {
+        border-left: 4px solid #ef4444;
+    }
+
+    .alert-item.read {
+        opacity: 0.6;
+        border-left: 4px solid #94a3b8;
+    }
+
+    .alert-content {
+        flex: 1;
+    }
+
+    .alert-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+    }
+
+    .alert-level {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .level-high {
+        background: #ef4444;
+        color: white;
+    }
+
+    .level-medium {
+        background: #f59e0b;
+        color: white;
+    }
+
+    .level-low {
+        background: #10b981;
+        color: white;
+    }
+
+    .alert-type {
+        font-size: 12px;
+        color: #64748b;
+        text-transform: uppercase;
+    }
+
+    .alert-message {
+        color: #1e293b;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .alert-meta {
+        display: flex;
+        gap: 16px;
+        margin-top: 8px;
+        font-size: 12px;
+        color: #64748b;
+    }
+
+    .alert-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-alert {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-mark-read {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .btn-mark-read:hover {
+        background: #2563eb;
+    }
+
+    .btn-resolve {
+        background: #10b981;
+        color: white;
+    }
+
+    .btn-resolve:hover {
+        background: #059669;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #64748b;
+    }
+
+    .empty-state-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="alerts-container">
+    <div class="alerts-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            {% if unread_count > 0 %}
+            <span class="unread-badge">{{ unread_count }} 未读</span>
+            {% endif %}
+        </div>
+        <button onclick="refreshAlerts()" class="btn-alert btn-mark-read">刷新</button>
+    </div>
+
+    {% if alerts %}
+    <div class="alerts-list">
+        {% for alert in alerts %}
+        <div class="alert-item {% if alert.is_read %}read{% else %}unread{% endif %}" id="alert-{{ alert.alert_id }}">
+            <div class="alert-content">
+                <div class="alert-header">
+                    <span class="alert-level level-{{ alert.level }}">
+                        {% if alert.level == 'high' %}高{% elif alert.level == 'medium' %}中{% else %}低{% endif %}
+                    </span>
+                    <span class="alert-type">{{ alert.type }}</span>
+                    {% if alert.is_read %}
+                    <span style="font-size: 12px; color: #10b981;">✓ 已读</span>
+                    {% endif %}
+                    {% if alert.resolved_at %}
+                    <span style="font-size: 12px; color: #10b981;">✓ 已解决</span>
+                    {% endif %}
+                </div>
+                <div class="alert-message">{{ alert.message }}</div>
+                <div class="alert-meta">
+                    <span>⏰ {{ alert.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                    {% if alert.task_id %}
+                    <span>📋 任务 #{{ alert.task_id }}</span>
+                    {% endif %}
+                    {% if alert.worker_id %}
+                    <span>👷 工人 ID: {{ alert.worker_id }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="alert-actions">
+                {% if not alert.is_read %}
+                <button class="btn-alert btn-mark-read" onclick="markAsRead({{ alert.alert_id }})">标记已读</button>
+                {% endif %}
+                {% if not alert.resolved_at %}
+                <button class="btn-alert btn-resolve" onclick="resolveAlert({{ alert.alert_id }})">解决</button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">✅</div>
+        <h3>暂无告警</h3>
+        <p>系统运行正常，没有需要处理的告警</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    function markAsRead(alertId) {
+        fetch(`/admin/alerts/mark_read/${alertId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const alertEl = document.getElementById(`alert-${alertId}`);
+                    alertEl.classList.remove('unread');
+                    alertEl.classList.add('read');
+
+                    // 添加已读标记
+                    const headerEl = alertEl.querySelector('.alert-header');
+                    const readBadge = document.createElement('span');
+                    readBadge.style.cssText = 'font-size: 12px; color: #10b981;';
+                    readBadge.textContent = '✓ 已读';
+                    headerEl.appendChild(readBadge);
+
+                    // 移除按钮
+                    const markReadBtn = alertEl.querySelector('.btn-mark-read');
+                    if (markReadBtn) markReadBtn.remove();
+
+                    // 更新未读数量
+                    updateUnreadCount();
+                } else {
+                    alert('操作失败: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('操作失败');
+            });
+    }
+
+    function resolveAlert(alertId) {
+        fetch(`/admin/alerts/resolve/${alertId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const alertEl = document.getElementById(`alert-${alertId}`);
+                    alertEl.classList.add('read');
+
+                    // 添加已解决标记
+                    const headerEl = alertEl.querySelector('.alert-header');
+                    const resolvedBadge = document.createElement('span');
+                    resolvedBadge.style.cssText = 'font-size: 12px; color: #10b981;';
+                    resolvedBadge.textContent = '✓ 已解决';
+                    headerEl.appendChild(resolvedBadge);
+
+                    // 移除所有操作按钮
+                    const actionsEl = alertEl.querySelector('.alert-actions');
+                    actionsEl.innerHTML = '';
+
+                    // 更新未读数量
+                    updateUnreadCount();
+                } else {
+                    alert('操作失败: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('操作失败');
+            });
+    }
+
+    function updateUnreadCount() {
+        fetch('/admin/alerts/unread')
+            .then(response => response.json())
+            .then(data => {
+                const unreadBadge = document.querySelector('.unread-badge');
+                if (data.count > 0) {
+                    if (unreadBadge) {
+                        unreadBadge.textContent = `${data.count} 未读`;
+                    }
+                } else {
+                    if (unreadBadge) {
+                        unreadBadge.remove();
+                    }
+                }
+            });
+    }
+
+    function refreshAlerts() {
+        location.reload();
+    }
+</script>
+{% endblock %}

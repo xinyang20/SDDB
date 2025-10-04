@@ -8,26 +8,25 @@
 {% endblock %}
 
 {% block body %}
-<h2>用户管理</h2>
 <form method="POST" action="/admin/users" style="margin-bottom: 20px;">
     <h3 align="center">添加用户</h3>
     <label for="username">用户名:</label>
     <input type="text" id="username" name="username" placeholder="用户名" required oninput="checkUsername()">
-    <span id="username-message" style="font-size: 0.9em; color: gray;">请输入用户名</span>
 
     <label for="password">密码:</label>
-    <input type="text" id="password" name="password" placeholder="密码" value="123456" required>
+    <input type="text" id="password" name="password" placeholder="密码" required>
 
     <label for="role-select">角色:</label>
     <select name="role" id="role-select" onchange="updateRoleForm()" required>
         <option value="">选择角色</option>
         <option value="patient">患者</option>
+        <option value="doctor">医生</option>
         <option value="worker">工人</option>
         <option value="admin">管理员</option>
     </select>
 
     <div id="role-form"></div>
-    <button type="submit">添加用户</button>
+    <button type="submit" class="btn-action">添加用户</button>
 </form>
 
 <div class="filter-container">
@@ -48,7 +47,7 @@
             <input type="text" id="username-search" name="username" placeholder="输入用户名"
                 value="{{ request.args.get('username', '') }}">
         </div>
-        <button type="submit">查询</button>
+        <button type="submit" class="btn-action">查询</button>
     </form>
 </div>
 
@@ -70,8 +69,9 @@
             <td>{{ user.role }}</td>
             <td>{{ user.role_id }}</td>
             <td>
-                <a href="/admin/users/edit/{{ user.uuid }}">编辑</a>
-                <button class="delete-button" onclick="openDeleteModal('{{ user.uuid }}')">删除</button>
+                <a href="/admin/users/edit/{{ user.uuid }}" class="btn-action" style="margin-right: 5px;">编辑</a>
+                <button class="delete-button btn-action" style="background-color: #dc2626;"
+                    onclick="openDeleteModal('{{ user.uuid }}')">删除</button>
             </td>
         </tr>
         {% endfor %}
@@ -93,7 +93,7 @@
         <form id="deleteForm" method="POST" action="">
             <label for="deletePassword">输入密码确认:</label>
             <input type="password" id="deletePassword" name="password" required>
-            <button type="submit">确认删除</button>
+            <button type="submit" class="btn-action" style="background-color: #dc2626;">确认删除</button>
         </form>
     </div>
 </div>

@@ -26,6 +26,12 @@
     <div class="dashboard-options">
         {% if session.get('role') == 'admin' %}
         <div class="dashboard-card">
+            <h3>数据看板</h3>
+            <ul>
+                <li><a href="/admin/dashboard">查看实时数据</a></li>
+            </ul>
+        </div>
+        <div class="dashboard-card">
             <h3>用户管理</h3>
             <ul>
                 <li><a href="/admin/users">管理用户账户</a></li>

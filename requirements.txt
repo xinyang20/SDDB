@@ -1,0 +1,19 @@
+# Core Flask dependencies
+Flask==3.0.0
+Flask-SQLAlchemy==3.1.1
+
+# FHIR interface
+fhir.resources==7.1.0
+flask-restful==0.3.10
+
+# Real-time dashboard
+flask-socketio==5.3.5
+redis==5.0.1
+python-socketio==5.10.0
+eventlet==0.33.3
+
+# Smart alert system
+celery==5.3.4
+
+# Additional utilities
+python-dotenv==1.0.0

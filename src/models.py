@@ -69,3 +69,16 @@ class TaskModel(db.Model):
     decoction_start_time = db.Column(db.DateTime)
     decoction_end_time = db.Column(db.DateTime)
     status = db.Column(db.String(20), default='未完成')
+
+class AlertModel(db.Model):
+    """告警记录模型"""
+    __tablename__ = 'alerts'
+    alert_id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(50), nullable=False)  # timeout, abnormal_fast, backlog, low_efficiency
+    level = db.Column(db.String(20), nullable=False)  # high, medium, low
+    message = db.Column(db.Text, nullable=False)
+    task_id = db.Column(db.Integer, db.ForeignKey('tasks.task_id'), nullable=True)
+    worker_id = db.Column(db.Integer, db.ForeignKey('workers.worker_id'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_read = db.Column(db.Boolean, default=False)
+    resolved_at = db.Column(db.DateTime, nullable=True)

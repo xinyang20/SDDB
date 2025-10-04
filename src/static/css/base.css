@@ -1,9 +1,9 @@
 /* ===== 设计系统变量 ===== */
 :root {
   /* 颜色系统 */
-  --primary-color: #2563eb;
-  --primary-hover: #1d4ed8;
-  --primary-light: #dbeafe;
+  --primary-color: #5397f4;
+  --primary-hover: #3d7dd6;
+  --primary-light: #e3f2fd;
   --secondary-color: #64748b;
   --success-color: #059669;
   --success-hover: #047857;
@@ -65,7 +65,7 @@
 
 body {
   font-family: var(--font-family);
-  background-color: var(--gray-50);
+  background-color: #ffffff;
   color: var(--gray-900);
   margin: 0;
   padding: 0;
@@ -324,6 +324,30 @@ button:hover {
   transform: translateY(-1px);
 }
 
+/* 通用按钮样式类 - 可复用 */
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-action:hover {
+  background-color: var(--primary-hover);
+  color: white;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
 /* ===== 表格系统 ===== */
 .table-container {
   overflow-x: auto;
@@ -473,7 +497,7 @@ table tbody tr:last-child td {
 /* ===== 页脚系统 ===== */
 .footer {
   background-color: var(--gray-800);
-  color: var(--gray-300);
+  color: #cbd5e1;
   padding: var(--spacing-6) 0;
   margin-top: auto;
 }
@@ -488,6 +512,7 @@ table tbody tr:last-child td {
 .footer-text {
   font-size: var(--font-size-sm);
   margin: 0;
+  color: #cbd5e1;
 }
 
 /* ===== 仪表盘组件 ===== */
@@ -528,7 +553,7 @@ table tbody tr:last-child td {
 }
 
 .dashboard-card h3 {
-  color: var(--primary-color);
+  color: #000000;
   margin-bottom: var(--spacing-4);
   font-size: var(--font-size-lg);
 }
