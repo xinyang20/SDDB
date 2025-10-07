@@ -46,7 +46,9 @@ class MedicationRequestResource(Resource):
         try:
             prescription = PrescriptionService.create_prescription(**prescription_data)
             fhir_response = FHIRSerializer.prescription_to_fhir(prescription)
-            return jsonify(fhir_response), 201
+            response = jsonify(fhir_response)
+            response.status_code = 201
+            return response
         except Exception as e:
             return {"error": str(e)}, 400
 

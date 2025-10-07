@@ -1,18 +1,31 @@
+from typing import Optional
+from datetime import datetime
 from models import PrescriptionModel, TaskModel
 from exts import db
 from services.task_service import TaskService
 
+
 class PrescriptionService:
     @staticmethod
-    def create_prescription(patient_id, doctor_id, amount, usage_instructions):
+    def create_prescription(
+        patient_id,
+        doctor_id,
+        amount,
+        usage_instructions,
+        status: Optional[str] = None,
+        expected_pickup_time: Optional[datetime] = None,
+    ):
         """创建处方并自动生成任务"""
         new_prescription = PrescriptionModel(
             patient_id=patient_id,
             doctor_id=doctor_id,
             amount=amount,
             usage_instructions=usage_instructions,
-            status='待配方'
+            status=status or '待配方'
         )
+        if expected_pickup_time is not None:
+            new_prescription.expected_pickup_time = expected_pickup_time
+
         db.session.add(new_prescription)
         db.session.commit()
 
